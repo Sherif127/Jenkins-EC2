@@ -15,18 +15,10 @@ pipeline {
     stage('Terraform Init & Apply') {
       steps {
         dir('terraform') {
-          withCredentials([
-            usernamePassword(
-              credentialsId: 'aws-cred',  // تأكد هنا إن الاسم مطابق للاسم في Jenkins Credentials
-              usernameVariable: 'AWS_ACCESS_KEY_ID',
-              passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-            )
-          ]) {
-            sh '''
-              terraform init
-              terraform apply -auto-approve
-            '''
-          }
+          sh '''
+            terraform init
+            terraform apply -auto-approve
+          '''
         }
       }
     }
