@@ -8,6 +8,6 @@ resource "aws_instance" "EC2-Jenkins" {
   key_name      = "mykey"
 
   tags = {
-    Name = Jenkins-ec2
+    Name = "Jenkins-ec2"
   }
 }
