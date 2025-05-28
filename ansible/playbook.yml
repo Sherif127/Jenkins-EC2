@@ -1,0 +1,49 @@
+---
+- name: Install Apache and deploy custom HTML page on Amazon Linux
+  hosts: ec2
+  become: true
+
+  tasks:
+    - name: Install Apache web server (httpd)
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable Apache service
+      ansible.builtin.systemd:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Deploy custom index.html
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+            <head>
+              <title>Welcome</title>
+              <style>
+                body {
+                  background-color: #282c34;
+                  color: #61dafb;
+                  font-family: Arial, sans-serif;
+                  text-align: center;
+                  padding-top: 50px;
+                }
+                h1 {
+                  color: #ff6347; /* tomato red */
+                }
+                p {
+                  font-size: 20px;
+                  color: #ffa500; /* orange */
+                }
+              </style>
+            </head>
+            <body>
+              <h1>sherif shaban</h1>
+              <p>"Jenkins-ansible-terraform-task"</p>
+            </body>
+          </html>
+        owner: root
+        group: root
+        mode: '0644'
