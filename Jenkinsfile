@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     TF_VAR_region = 'us-east-1'
-    ANSIBLE_HOST_KEY_CHECKING = 'False'  
+    ANSIBLE_HOST_KEY_CHECKING = 'False'
   }
 
   stages {
@@ -54,4 +54,10 @@ ${publicIp} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/mykey.pem
       steps {
         sshagent(credentials: ['ec2-ssh-key']) {
           sh '''
-            ansible-playbook -i ansible/inven
+            ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+          '''
+        }
+      }
+    }
+  }
+}
