@@ -43,7 +43,7 @@ pipeline {
 
           writeFile file: 'ansible/inventory.ini', text: """
           [ec2]
-          ${publicIp} ansible_user=ec2-user ansible_ssh_private_key_file=/home/ec2-user/.ssh/mykey.pem
+          ${publicIp} ansible_user=ec2-user
           """
         }
       }
@@ -51,9 +51,12 @@ pipeline {
 
     stage('Run Ansible Playbook') {
       steps {
-        sh '''
-          ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --timeout=300 -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
-        '''
+        sshagent(credentials: ['ec2-ssh-key']) {
+          sh '''
+            ansible-playbook -i ansible/inventory.ini ansible/playbook.yml \
+              --timeout=300 -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+          '''
+        }
       }
     }
   }
