@@ -51,7 +51,7 @@ pipeline {
 
     stage('Run Ansible Playbook') {
       steps {
-        sh 'ansible-playbook -i ansible/inventory.ini ansible/playbook.yml'
+        sh 'ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --timeout=300'
       }
     }
   }
