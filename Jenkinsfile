@@ -38,13 +38,13 @@ pipeline {
       steps {
         script {
           def publicIp = sh(
-            script: "cd terraform && terraform output -raw public_ip",
+            script: "cd terraform && terraform output -raw aws_instance_ip",
             returnStdout: true
           ).trim()
 
           writeFile file: 'ansible/inventory.ini', text: """
 [ec2]
-${publicIp} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/mykey.pem
+${publicIp} ansible_user=ec2-user
 """
         }
       }
