@@ -3,6 +3,7 @@ pipeline {
 
   environment {
     TF_VAR_region = 'us-east-1'
+    ANSIBLE_HOST_KEY_CHECKING = 'False'  
   }
 
   stages {
@@ -15,9 +16,9 @@ pipeline {
     stage('Terraform Init & Apply') {
       steps {
         withCredentials([
-          string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
-          string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY'),
-          string(credentialsId: 'AWS_SESSION_TOKEN', variable: 'AWS_SESSION_TOKEN')
+          string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+          string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY'),
+          string(credentialsId: 'aws-session-token', variable: 'AWS_SESSION_TOKEN')
         ]) {
           dir('terraform') {
             sh '''
@@ -42,9 +43,9 @@ pipeline {
           ).trim()
 
           writeFile file: 'ansible/inventory.ini', text: """
-          [ec2]
-          ${publicIp} ansible_user=ec2-user
-          """
+[ec2]
+${publicIp} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/mykey.pem
+"""
         }
       }
     }
@@ -53,11 +54,4 @@ pipeline {
       steps {
         sshagent(credentials: ['ec2-ssh-key']) {
           sh '''
-            ansible-playbook -i ansible/inventory.ini ansible/playbook.yml \
-              --timeout=300 -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
-          '''
-        }
-      }
-    }
-  }
-}
+            ansible-playbook -i ansible/inven
