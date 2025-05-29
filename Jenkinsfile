@@ -43,7 +43,7 @@ pipeline {
 
           writeFile file: 'ansible/inventory.ini', text: """
           [ec2]
-          ${publicIp} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/mykey.pem
+          ${publicIp} ansible_user=ec2-user ansible_ssh_private_key_file=/home/ec2-user/.ssh/mykey.pem
           """
         }
       }
